@@ -1,0 +1,27 @@
+{
+  "name": "speech-recog-stream",
+  "version": "1.0.0",
+  "description": "A module to stream audio to a speech recognition server and get back the STT result\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MayamaTakeshi/speech-recog-stream.git"
+  },
+  "keywords": [
+    "speech",
+    "recognition",
+    "speech-to-test",
+    "STT",
+    "ASR",
+    "stream"
+  ],
+  "author": "MayamaTakeshi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MayamaTakeshi/speech-recog-stream/issues"
+  },
+  "homepage": "https://github.com/MayamaTakeshi/speech-recog-stream#readme"
+}
