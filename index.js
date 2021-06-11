@@ -135,8 +135,8 @@ class SpeechRecogStream extends Writable {
         //console.log('_final')
 
         if(this.audio_port_client && this.audio_port_client != this.client) {
-            this.audio_port.client.end()
-            this.audio_port.client = null
+            this.audio_port_client.end()
+            this.audio_port_client = null
         }
 
         if(this.client) {
