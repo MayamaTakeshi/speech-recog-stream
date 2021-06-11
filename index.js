@@ -79,13 +79,13 @@ class SpeechRecogStream extends Writable {
     terminate(err) {
         if(this.audio_port_client && this.audio_port_client != this.client) {
             this.audio_port_client.removeAllListeners()
-            this.audio_port_client(end)
+            this.audio_port_client.end()
             this.audio_port_client = null
         }
 
         if(this.client) {
             this.client.removeAllListeners()
-            this.client(end)
+            this.client.end()
             this.client = null
         }
 

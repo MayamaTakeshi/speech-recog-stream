@@ -1,6 +1,6 @@
 {
   "name": "speech-recog-stream",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A module to stream audio to a speech recognition server and get back the STT result\"",
   "main": "index.js",
   "scripts": {
