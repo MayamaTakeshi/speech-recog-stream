@@ -24,52 +24,55 @@ class SpeechRecogStream extends Writable {
             this.eventEmitter.emit('error', err)
         })
 
-        this.client.on('data', data => {
+        var self = this;
+
+        this.client.on('data', function(data) {
+            console.log(data)
             var data = data.toString('utf8')
 
-            this.acc += data
+            self.acc += data
 
-            var pos = this.acc.indexOf("\n")
+            var pos = self.acc.indexOf("\n")
             while(pos >= 0) {
-                var msg = this.acc.substring(0, pos)
-                this.acc = this.acc.substring(pos+1)
+                var msg = self.acc.substring(0, pos)
+                self.acc = self.acc.substring(pos+1)
 
                 if(msg.startsWith('+AUDIO_PORT:')) {
                     var audio_port = parseInt(msg.split(":")[1])
                     console.log(`audio_port=${audio_port}`)
 
-                    this.audio_port_client = new net.Socket()
+                    self.audio_port_client = new net.Socket()
 
-                    this.audio_port_client.on('end', function() {
-                        this.terminate()
+                    self.audio_port_client.on('end', function() {
+                        self.terminate()
                     })
 
-                    this.audio_port_client.on('error', err => {
-                        this.terminate(err)
+                    self.audio_port_client.on('error', err => {
+                        self.terminate(err)
                     })
 
-                    this.audio_port_client.on('close', function() {
-                        this.terminate()
+                    self.audio_port_client.on('close', function() {
+                        self.terminate()
                     })
 
-                    this.audio_port_client.connect(audio_port, opts.server_ip) 
+                    self.audio_port_client.connect(audio_port, opts.server_ip) 
 
-                    this.send_length_prefix = true
+                    self.send_length_prefix = true
                 } else if(msg == '+READY') {
-                    this.eventEmitter.emit('ready')
+                    self.eventEmitter.emit('ready')
                 } else {
                     if(msg.startsWith('+SPEECH_')) {
-                        this.eventEmitter.emit('data', {
+                        self.eventEmitter.emit('data', {
                             event: msg.substring(1).toLowerCase()
                         })
                     } else if(msg.startsWith('+RESULT:')) {
-                        this.eventEmitter.emit('data', {
+                        self.eventEmitter.emit('data', {
                             event: "result",
                             text: msg.substring(8),
                         })
                     }
                 }
-                pos = this.acc.indexOf("\n")
+                pos = self.acc.indexOf("\n")
             }
         })
 
