@@ -38,7 +38,7 @@ class SpeechRecogStream extends Writable {
 
                 if(msg.startsWith('+AUDIO_PORT:')) {
                     var audio_port = parseInt(msg.split(":")[1])
-                    console.log(`audio_port=${audio_port}`)
+                    //console.log(`audio_port=${audio_port}`)
 
                     self.audio_port_client = new net.Socket()
 
@@ -75,26 +75,31 @@ class SpeechRecogStream extends Writable {
             }
         })
 
+        this.client.on('close', function() {
+            self.terminate()
+        })
+
         this.client.connect(opts.server_port, opts.server_ip)
     }
 
     terminate(err) {
+        //console.log("speech-recog-stream terminate") 
         if(this.audio_port_client && this.audio_port_client != this.client) {
             this.audio_port_client.removeAllListeners()
-            this.audio_port_client.end()
+            this.audio_port_client.destroy()
             this.audio_port_client = null
         }
 
         if(this.client) {
             this.client.removeAllListeners()
-            this.client.end()
+            this.client.destroy()
             this.client = null
         }
 
         if(err) {
             this.eventEmitter.emit('error', err)
         } else {
-            this.eventEmitter.emit('end')
+            this.eventEmitter.emit('close')
         }
 
         this.eventEmitter.removeAllListeners()
@@ -122,6 +127,24 @@ class SpeechRecogStream extends Writable {
         }
 
         this.audio_port_client.write(chunk)
+
+        callback()
+    }
+
+    _final(callback) {
+        //console.log('_final')
+
+        if(this.audio_port_client && this.audio_port_client != this.client) {
+            this.audio_port.client.end()
+            this.audio_port.client = null
+        }
+
+        if(this.client) {
+            this.client.end()
+            this.client = null
+        }
+
+        this.eventEmitter.removeAllListeners()
 
         callback()
     }
