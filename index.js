@@ -24,10 +24,9 @@ class SpeechRecogStream extends Writable {
             this.eventEmitter.emit('error', err)
         })
 
-        var self = this;
+        var self = this
 
         this.client.on('data', function(data) {
-            console.log(data)
             var data = data.toString('utf8')
 
             self.acc += data
